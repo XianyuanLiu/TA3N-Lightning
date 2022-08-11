@@ -39,6 +39,31 @@ class VideoRecord(object):
             return 0, 0
 
 
+class VideoRecordAGK(object):
+    def __init__(self, row, root_datapath):
+        self._data = row
+        self._path = os.path.join(root_datapath, row[0])
+
+    @property
+    def segment_id(self):
+        return self._path
+
+    @property
+    def num_frames(self):
+        return self.end_frame - self.start_frame + 1  # +1 because end frame is inclusive
+
+    @property
+    def start_frame(self):
+        return int(self._data[1])
+
+    @property
+    def end_frame(self):
+        return int(self._data[2])
+
+    @property
+    def label(self):
+        return [int(self._data[3]), 0]
+
 class TSNDataSet(data.Dataset):
     def __init__(self, data_path, list_file, num_dataload,
                  num_segments=3, total_segments=25, new_length=1, modality='RGB',
@@ -46,28 +71,25 @@ class TSNDataSet(data.Dataset):
                  force_grayscale=False, random_shift=True,
                  test_mode=False, noun_data_path=None):
         self.modality = modality
-        try:
-            with open(data_path, "rb") as f:
+        with open(data_path, "rb") as f:
+            data = pickle.load(f)
+            if modality == "ALL":
+                self.data = np.concatenate(list(data['features'].values()), -1)
+            else:
+                self.data = data['features'][modality]
+            data_narrations = data['narration_ids']
+            self.data = dict(zip(data_narrations, self.data))
+        if noun_data_path is not None:
+            with open(noun_data_path, "rb") as f:
                 data = pickle.load(f)
                 if modality == "ALL":
-                    self.data = np.concatenate(list(data['features'].values()), -1)
+                    self.noun_data = np.concatenate(list(data['features'].values()), -1)
                 else:
-                    self.data = data['features'][modality]
+                    self.noun_data = data['features'][modality]
                 data_narrations = data['narration_ids']
-                self.data = dict(zip(data_narrations, self.data))
-            if noun_data_path is not None:
-                with open(noun_data_path, "rb") as f:
-                    data = pickle.load(f)
-                    if modality == "ALL":
-                        self.noun_data = np.concatenate(list(data['features'].values()), -1)
-                    else:
-                        self.noun_data = data['features'][modality]
-                    data_narrations = data['narration_ids']
-                    self.noun_data = dict(zip(data_narrations, self.noun_data))
-            else:
-                self.noun_data = None
-        except:
-            raise Exception("Cannot read the data in the given pickle file {}".format(data_path))
+                self.noun_data = dict(zip(data_narrations, self.noun_data))
+        else:
+            self.noun_data = None
 
         self.list_file = list_file
         self.num_segments = num_segments
@@ -107,11 +129,8 @@ class TSNDataSet(data.Dataset):
         return torch.from_numpy(np.expand_dims(self.data[idx][segment - 1], axis=0)).float()
 
     def _parse_list(self):
-        try:
-            label_file = pd.read_pickle(self.list_file).reset_index()
-            self.labels_available = (("verb_class" in label_file) and ("noun_class" in label_file))
-        except:
-            raise Exception("Cannot read pickle, {},containing labels".format(self.list_file))
+        label_file = pd.read_pickle(self.list_file).reset_index()
+        self.labels_available = (("verb_class" in label_file) and ("noun_class" in label_file))
         self.video_list = [VideoRecord(i, row[1], self.total_segments) for i, row in enumerate(label_file.iterrows())]
         # repeat the list if the length is less than num_dataload (especially for target data)
         n_repeat = self.num_dataload // len(self.video_list)
@@ -173,7 +192,8 @@ class TSNDataSet(data.Dataset):
         return self.get(record, segment_indices)
 
     def get(self, record, indices):
-
+        if self.image_tmpl in ["img_{:05d}.t7", "flow_{:05d}.t7"]:
+            indices = indices + record.start_frame - 1
         frames = list()
 
         for seg_ind in indices:
@@ -210,3 +230,50 @@ class TSNDataSet(data.Dataset):
 
     def __len__(self):
         return len(self.video_list)
+
+
+class AGKDataSet(TSNDataSet):
+    def __init__(self, data_path, list_file, num_dataload,
+                 num_segments=3, total_segments=16, new_length=1, modality='RGB',
+                 image_tmpl='img_{:05d}.t7', transform=None,
+                 force_grayscale=False, random_shift=True,
+                 test_mode=False, noun_data_path=None):
+
+        self.data_path = data_path
+        self.modality = modality
+        self.list_file = list_file
+        self.num_segments = num_segments
+        self.total_segments = total_segments
+        self.new_length = new_length
+        self.modality = modality
+        self.image_tmpl = image_tmpl
+        self.transform = transform
+        self.random_shift = random_shift
+        self.test_mode = test_mode
+        self.num_dataload = num_dataload
+        self.noun_data = None
+
+        self._parse_list()
+
+    def _parse_list(self):
+        self.video_list = [VideoRecordAGK(x, self.data_path) for x in list(self.make_dataset())]
+        n_repeat = self.num_dataload // len(self.video_list)
+        n_left = self.num_dataload % len(self.video_list)
+        self.video_list = self.video_list * n_repeat + self.video_list[:n_left]
+
+    def make_dataset(self):
+        data = []
+        i = 0
+        input_file = pd.read_pickle(self.list_file)
+        for line in input_file.values:
+            if 0 <= eval(line[5]) < 7:
+                data.append((line[0], eval(line[1]), eval(line[2]), eval(line[5])))
+                i = i + 1
+        print("Number of action segments: {}".format(i))
+        return data
+
+    def _load_feature(self, directory, idx):
+        feat_path = os.path.join(directory, self.image_tmpl.format(idx))
+        # print(feat_path)
+        feat = [torch.load(feat_path)]
+        return feat

@@ -9,7 +9,7 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 from torch.nn.utils import clip_grad_norm_
 
-from dataset import TSNDataSet
+from dataset import TSNDataSet, AGKDataSet
 from utils.loss import *
 import pandas as pd
 
@@ -25,10 +25,46 @@ def get_train_data_loaders(cfg):
     elif cfg.DATASET.MODALITY in ['Flow', 'RGBDiff', 'RGBDiff2', 'RGBDiffplus']:
         data_length = 1
 
+    if cfg.DATASET.DATASET == 'epic':
+        train_source_list = Path(cfg.PATHS.TRAIN_SOURCE_LIST)
+        train_target_list = Path(cfg.PATHS.TRAIN_TARGET_LIST)
+        test_list = Path(cfg.PATHS.TEST_LIST)
+    elif cfg.DATASET.DATASET == 'adl':
+        train_source_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.DATASET.DATASET.upper(),
+            "annotations/labels_train_test",
+            "{}_{}_train.pkl".format(cfg.DATASET.DATASET, cfg.PATHS.DATASET_SOURCE))
+        train_target_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.DATASET.DATASET.upper(),
+            "annotations/labels_train_test",
+            "{}_{}_train.pkl".format(cfg.DATASET.DATASET, cfg.PATHS.DATASET_TARGET))
+        test_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.DATASET.DATASET.upper(),
+            "annotations/labels_train_test",
+            "{}_{}_test.pkl".format(cfg.DATASET.DATASET, cfg.PATHS.DATASET_TARGET))
+    else:
+        train_source_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.PATHS.DATASET_SOURCE.upper(),
+            "annotations/labels_train_test",
+            "{}_train.pkl".format(cfg.PATHS.DATASET_SOURCE))
+        train_target_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.PATHS.DATASET_TARGET.upper(),
+            "annotations/labels_train_test",
+            "{}_train.pkl".format(cfg.PATHS.DATASET_TARGET))
+        test_list = Path(cfg.PATHS.PATH_DATA_ROOT).joinpath(
+            cfg.PATHS.DATASET_TARGET.upper(),
+            "annotations/labels_train_test",
+            "{}_test.pkl".format(cfg.PATHS.DATASET_TARGET))
+
+
     # calculate the number of videos to load for training in each list ==> make sure the iteration # of source & target are same
-    num_source = len(pd.read_pickle(cfg.PATHS.TRAIN_SOURCE_LIST).index)
-    num_target = len(pd.read_pickle(cfg.PATHS.TRAIN_TARGET_LIST).index)
-    num_val = len(pd.read_pickle(cfg.PATHS.TEST_LIST).index)
+    # num_source = len(pd.read_pickle(cfg.PATHS.TRAIN_SOURCE_LIST).index)
+    # num_target = len(pd.read_pickle(cfg.PATHS.TRAIN_TARGET_LIST).index)
+    # num_val = len(pd.read_pickle(cfg.PATHS.TEST_LIST).index)
+
+    num_source = len(pd.read_pickle(train_source_list).index)
+    num_target = len(pd.read_pickle(train_target_list).index)
+    num_val = len(pd.read_pickle(test_list).index)
 
     num_iter_source = num_source / cfg.TRAINER.BATCH_SIZE[0]
     num_iter_target = num_target / cfg.TRAINER.BATCH_SIZE[1]
@@ -37,12 +73,16 @@ def get_train_data_loaders(cfg):
                                                                               0] == 'Y' else num_source
     num_target_train = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[1]) if cfg.TRAINER.COPY_LIST[
                                                                               1] == 'Y' else num_target
-    num_source_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[0]) if cfg.TRAINER.COPY_LIST[0] == 'Y' else num_source
-    num_target_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[1]) if cfg.TRAINER.COPY_LIST[1] == 'Y' else num_target
-
-    train_source_data = Path(cfg.PATHS.PATH_DATA_SOURCE + ".pkl")
-    train_source_list = Path(cfg.PATHS.TRAIN_SOURCE_LIST)
-    source_set = TSNDataSet(train_source_data, train_source_list,
+    num_source_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[0]) if cfg.TRAINER.COPY_LIST[
+                                                                            0] == 'Y' else num_source
+    num_target_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[1]) if cfg.TRAINER.COPY_LIST[
+                                                                            1] == 'Y' else num_target
+    if cfg.DATASET.DATASET == 'epic':
+        train_source_data = Path(cfg.PATHS.PATH_DATA_SOURCE + ".pkl")
+    else:
+        train_source_data = Path(cfg.PATHS.PATH_DATA_SOURCE)
+    # train_source_list = Path(cfg.PATHS.TRAIN_SOURCE_LIST)
+    source_set = AGKDataSet(train_source_data, train_source_list,
                             num_dataload=num_source_train,
                             num_segments=cfg.DATASET.NUM_SEGMENTS,
                             new_length=data_length, modality=cfg.DATASET.MODALITY,
@@ -56,9 +96,12 @@ def get_train_data_loaders(cfg):
     source_loader = torch.utils.data.DataLoader(source_set, batch_size=cfg.TRAINER.BATCH_SIZE[0], shuffle=False,
                                                 sampler=source_sampler, num_workers=cfg.TRAINER.WORKERS, pin_memory=True)
 
-    train_target_data = Path(cfg.PATHS.PATH_DATA_TARGET + ".pkl")
-    train_target_list = Path(cfg.PATHS.TRAIN_TARGET_LIST)
-    target_set = TSNDataSet(train_target_data, train_target_list,
+    if cfg.DATASET.DATASET == 'epic':
+        train_target_data = Path(cfg.PATHS.PATH_DATA_TARGET + ".pkl")
+    else:
+        train_target_data = Path(cfg.PATHS.PATH_DATA_TARGET)
+    # train_target_list = Path(cfg.PATHS.TRAIN_TARGET_LIST)
+    target_set = AGKDataSet(train_target_data, train_target_list,
                             num_dataload=num_target_train,
                             num_segments=cfg.DATASET.NUM_SEGMENTS,
                             new_length=data_length, modality=cfg.DATASET.MODALITY,
@@ -96,9 +139,12 @@ def get_val_data_loaders(cfg):
     num_source_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[0]) if cfg.TRAINER.COPY_LIST[0] == 'Y' else num_source
     num_target_val = round(num_max_iter * cfg.TRAINER.BATCH_SIZE[1]) if cfg.TRAINER.COPY_LIST[1] == 'Y' else num_target
 
-    val_source_data = Path(cfg.PATHS.PATH_VAL_DATA_SOURCE + ".pkl")
+    if cfg.DATASET.DATASET == 'epic':
+        val_source_data = Path(cfg.PATHS.PATH_VAL_DATA_SOURCE + ".pkl")
+    else:
+        val_source_data = Path(cfg.PATHS.PATH_VAL_DATA_SOURCE)
     val_source_list = Path(cfg.PATHS.VAL_SOURCE_LIST)
-    source_set_val = TSNDataSet(val_source_data, val_source_list,
+    source_set_val = AGKDataSet(val_source_data, val_source_list,
                                 num_dataload=num_source_val,
                                 num_segments=cfg.DATASET.VAL_SEGMENTS,
                                 new_length=data_length, modality=cfg.DATASET.MODALITY,
@@ -113,9 +159,12 @@ def get_val_data_loaders(cfg):
                                                     sampler=source_sampler_val, num_workers=cfg.TRAINER.WORKERS,
                                                     pin_memory=True)
 
-    val_target_data = Path(cfg.PATHS.PATH_VAL_DATA_TARGET + ".pkl")
+    if cfg.DATASET.DATASET == 'epic':
+        val_target_data = Path(cfg.PATHS.PATH_VAL_DATA_TARGET + ".pkl")
+    else:
+        val_target_data = Path(cfg.PATHS.PATH_VAL_DATA_TARGET)
     val_target_list = Path(cfg.PATHS.VAL_TARGET_LIST)
-    target_set_val = TSNDataSet(val_target_data, val_target_list,
+    target_set_val = AGKDataSet(val_target_data, val_target_list,
                                 num_dataload=num_target_val,
                                 num_segments=cfg.DATASET.VAL_SEGMENTS,
                                 new_length=data_length, modality=cfg.DATASET.MODALITY,
@@ -136,10 +185,15 @@ def get_val_data_loaders(cfg):
 def get_test_data_loaders(cfg):
     data_length = 1 if cfg.DATASET.MODALITY == "RGB" else 1
     num_test = len(pd.read_pickle(cfg.PATHS.TEST_LIST).index)
-    test_target_data = Path(cfg.TESTER.TEST_TARGET_DATA + ".pkl")
+
+    if cfg.DATASET.DATASET == 'epic':
+        test_target_data = Path(cfg.TESTER.TEST_TARGET_DATA + ".pkl")
+    else:
+        test_target_data = Path(cfg.TESTER.TEST_TARGET_DATA)
+
     test_target_list = Path(cfg.PATHS.TEST_LIST)
     if cfg.TESTER.NOUN_TARGET_DATA is not None:
-        data_set = TSNDataSet(test_target_data, test_target_list,
+        data_set = AGKDataSet(test_target_data, test_target_list,
                               num_dataload=num_test,
                               num_segments=cfg.TESTER.TEST_SEGMENTS,
                               new_length=data_length, modality=cfg.DATASET.MODALITY,
@@ -148,7 +202,7 @@ def get_test_data_loaders(cfg):
                               test_mode=True, noun_data_path=cfg.TESTER.NOUN_TARGET_DATA + ".pkl"
                               )
     else:
-        data_set = TSNDataSet(test_target_data, test_target_list,
+        data_set = AGKDataSet(test_target_data, test_target_list,
                               num_dataload=num_test,
                               num_segments=cfg.TESTER.TEST_SEGMENTS,
                               new_length=data_length, modality=cfg.DATASET.MODALITY,
