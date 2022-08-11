@@ -1,0 +1,33 @@
+TO_VALIDATE: True
+PATHS:
+  PATH_DATA_ROOT: "F:/Datasets/EgoAction/"
+  PATH_LABELS_ROOT: "F:/Datasets/EgoAction/"
+  DATASET_SOURCE: "gtea"
+  DATASET_TARGET: "kitchen"
+  PATH_DATA_SOURCE: "F:/Datasets/EgoAction/GTEA/frames_rgb_flow/feature/"
+  PATH_DATA_TARGET: "F:/Datasets/EgoAction/KITCHEN/frames_rgb_flow/feature/"
+  TRAIN_SOURCE_LIST: "F:/Datasets/EgoAction/GTEA/annotations/labels_train_test/gtea_train.pkl"
+  TRAIN_TARGET_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_train.pkl"
+  VAL_DATASET_SOURCE: "gtea"
+  VAL_DATASET_TARGET: "kitchen"
+  PATH_VAL_DATA_SOURCE: "F:/Datasets/EgoAction/GTEA/frames_rgb_flow/feature/"
+  PATH_VAL_DATA_TARGET: "F:/Datasets/EgoAction/KITCHEN/frames_rgb_flow/feature/"
+  VAL_SOURCE_LIST: "F:/Datasets/EgoAction/GTEA/annotations/labels_train_test/gtea_train.pkl"
+  VAL_TARGET_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_train.pkl"
+  TEST_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_test.pkl"
+DATASET:
+  DATASET: "gtea"
+  MODALITY: "RGB"
+#  NUM_CLASSES: 97,300
+  NUM_SOURCE: 1457
+  NUM_TARGET: 3228
+  NUM_SEGMENTS: 16
+  VAL_SEGMENTS: 16
+TRAINER:
+  MAX_EPOCHS: 30
+  TRAIN_METRIC: "verb"
+  BATCH_SIZE: [16,36,16]
+TESTER:
+  TEST_TARGET_DATA: "F:/Datasets/EgoAction/KITCHEN/frames_rgb_flow/feature/"
+  TEST_SEGMENTS: 16
+  BATCH_SIZE: 16
