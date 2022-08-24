@@ -5,7 +5,7 @@ PATHS:
   PATH_DATA_SOURCE: "F:/Datasets/EgoAction/EPIC100/frames_rgb_flow/feature/source_val"
   PATH_DATA_TARGET: "F:/Datasets/EgoAction/EPIC100/frames_rgb_flow/feature/target_val"
 DATASET:
-  DATASET: "epic"
+  DATASET: "epic100"
   MODALITY: "RGB"
 TRAINER:
   MAX_EPOCHS: 30
