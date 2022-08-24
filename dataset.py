@@ -64,6 +64,7 @@ class VideoRecordAGK(object):
     def label(self):
         return [int(self._data[3]), 0]
 
+
 class TSNDataSet(data.Dataset):
     def __init__(self, data_path, list_file, num_dataload,
                  num_segments=3, total_segments=25, new_length=1, modality='RGB',
@@ -192,7 +193,7 @@ class TSNDataSet(data.Dataset):
         return self.get(record, segment_indices)
 
     def get(self, record, indices):
-        if self.image_tmpl in ["img_{:05d}.t7", "flow_{:05d}.t7"]:
+        if self.image_tmpl in ["img_{:05d}.t7", "flow_{:05d}.t7", "img_{:07d}.t7", "flow_{:07d}.t7"]:
             indices = indices + record.start_frame - 1
         frames = list()
 
@@ -277,3 +278,29 @@ class AGKDataSet(TSNDataSet):
         # print(feat_path)
         feat = [torch.load(feat_path)]
         return feat
+
+
+class EPICDataSet(AGKDataSet):
+    def __init__(self, data_path, list_file, num_dataload,
+                 num_segments=3, total_segments=16, new_length=1, modality='RGB',
+                 image_tmpl='img_{:05d}.t7', transform=None,
+                 force_grayscale=False, random_shift=True,
+                 test_mode=False, noun_data_path=None):
+
+        super(EPICDataSet, self).__init__(data_path, list_file, num_dataload,
+                                          num_segments, total_segments, new_length, modality,
+                                          image_tmpl, transform,
+                                          force_grayscale, random_shift,
+                                          test_mode, noun_data_path)
+    def make_dataset(self):
+        data = []
+        i = 0
+        input_file = pd.read_pickle(self.list_file)
+        for line in input_file.values:
+            if line[1] in ["P01", "P08", "P22"]:
+                if 0 <= line[9] < 7:
+                    if line[7] - line[6] + 1 >= 16:
+                        label = line[9]
+                        data.append((os.path.join(line[1], line[2]), line[6], line[7], label))
+                        i = i + 1
+        return data
