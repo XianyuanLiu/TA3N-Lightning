@@ -86,14 +86,22 @@ def initialise_trainer(cfg):
     ####num_class = len(class_names)
 
     # New approach
-    num_class_str = cfg.DATASET.NUM_CLASSES.split(",")
-    # single class
-    if len(num_class_str) < 1:
-        raise Exception("Must specify a number of classes to train")
+    # num_class_str = cfg.DATASET.NUM_CLASSES.split(",")
+    # # single class
+    # if len(num_class_str) < 1:
+    #     raise Exception("Must specify a number of classes to train")
+    # else:
+    #     num_class = []
+    #     for num in num_class_str:
+    #         num_class.append(int(num))
+    if cfg.DATASET.DATASET == "adl":
+        num_class = [7, 6]
+    elif cfg.DATASET.DATASET in ["gtea", "kitchen"]:
+        num_class = [6, 6]
+    elif cfg.DATASET.DATASET == "epic":
+        num_class = [8, 6]
     else:
-        num_class = []
-        for num in num_class_str:
-            num_class.append(int(num))
+        num_class = [97, 300]
 
     # === check the folder existence ===#
     path_exp = cfg.PATHS.EXP_PATH
@@ -166,15 +174,23 @@ def set_hyperparameters_test(model, cfg):
 
 
 def initialise_tester(cfg):
-    # New approach
-    num_class_str = cfg.DATASET.NUM_CLASSES.split(",")
-    # single class
-    if len(num_class_str) < 1:
-        raise Exception("Must specify a number of classes to train")
+    # # New approach
+    # num_class_str = cfg.DATASET.NUM_CLASSES.split(",")
+    # # single class
+    # if len(num_class_str) < 1:
+    #     raise Exception("Must specify a number of classes to train")
+    # else:
+    #     num_class = []
+    # for num in num_class_str:
+    #     num_class.append(int(num))
+    if cfg.DATASET.DATASET == "adl":
+        num_class = [7, 6]
+    elif cfg.DATASET.DATASET in ["gtea", "kitchen"]:
+        num_class = [6, 6]
+    elif cfg.DATASET.DATASET == "epic":
+        num_class = [8, 6]
     else:
-        num_class = []
-    for num in num_class_str:
-        num_class.append(int(num))
+        num_class = [97, 300]
 
     verb_net = TA3NTrainer(num_class, cfg.DATASET.BASELINE_TYPE, cfg.DATASET.FRAME_AGGREGATION, cfg.DATASET.MODALITY,
                            train_segments=cfg.TESTER.TEST_SEGMENTS if cfg.DATASET.BASELINE_TYPE == 'video' else 1,

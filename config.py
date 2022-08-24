@@ -52,8 +52,7 @@ _C.PATHS.VAL_TARGET_LIST = os.path.join(_C.PATHS.PATH_LABELS_ROOT, "EPIC_100_uda
 # -----------------------------------------------------------------------------
 _C.DATASET = CN()
 _C.DATASET.DATASET = "epic"  # dataset choices = [hmdb_ucf, hmdb_ucf_small, ucf_olympic]
-# _C.DATASET.NUM_CLASSES = "97,300"
-_C.DATASET.NUM_CLASSES = "7,6"
+_C.DATASET.NUM_CLASSES = "97,300"
 _C.DATASET.NUM_SOURCE = 5002  # number of training data (source)
 _C.DATASET.NUM_TARGET = 7906  # number of training data (target)
 
