@@ -1,0 +1,33 @@
+TO_VALIDATE: True
+PATHS:
+  PATH_DATA_ROOT: "/home/czh/lxy/data/EgoAction/"
+  PATH_LABELS_ROOT: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/"
+  DATASET_SOURCE: "P_06"
+  DATASET_TARGET: "P_11"
+  PATH_DATA_SOURCE: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
+  PATH_DATA_TARGET: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
+  TRAIN_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_06_train.pkl"
+  TRAIN_TARGET_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_11_train.pkl"
+  VAL_DATASET_SOURCE: "P_06"
+  VAL_DATASET_TARGET: "P_11"
+  PATH_VAL_DATA_SOURCE: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
+  PATH_VAL_DATA_TARGET: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
+  VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_06_train.pkl"
+  VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_11_train.pkl"
+  TEST_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_11_test.pkl"
+DATASET:
+  DATASET: "adl"
+  MODALITY: "RGB"
+#  NUM_CLASSES: 97,300
+  NUM_SOURCE: 792
+  NUM_TARGET: 527
+  NUM_SEGMENTS: 16
+  VAL_SEGMENTS: 16
+TRAINER:
+  MAX_EPOCHS: 30
+  TRAIN_METRIC: "verb"
+  BATCH_SIZE: [16,11,16]
+TESTER:
+  TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
+  TEST_SEGMENTS: 16
+  BATCH_SIZE: 16
