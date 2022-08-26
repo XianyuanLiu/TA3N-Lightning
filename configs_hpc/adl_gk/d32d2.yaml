@@ -15,7 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_train.pkl"
   VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D2_train.pkl"
   TEST_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D2_test.pkl"
-  PATH_EXP: "model/epic/d32d2/"
+  EXP_PATH: "model/epic/d32d2/"
 DATASET:
   DATASET: "epic"
   MODALITY: "RGB"

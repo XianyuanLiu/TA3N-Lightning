@@ -15,7 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_06_train.pkl"
   VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_11_train.pkl"
   TEST_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_11_test.pkl"
-  PATH_EXP: "model/adl/p62p11/"
+  EXP_PATH: "model/adl/p62p11/"
 DATASET:
   DATASET: "adl"
   MODALITY: "RGB"
