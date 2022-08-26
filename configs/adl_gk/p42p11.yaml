@@ -15,6 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "F:/Datasets/EgoAction/ADL/annotations/labels_train_test/adl_P_04_train.pkl"
   VAL_TARGET_LIST: "F:/Datasets/EgoAction/ADL/annotations/labels_train_test/adl_P_11_train.pkl"
   TEST_LIST: "F:/Datasets/EgoAction/ADL/annotations/labels_train_test/adl_P_11_test.pkl"
+  PATH_EXP: "model/adl/p42p11/"
 DATASET:
   DATASET: "adl"
   MODALITY: "RGB"
@@ -31,5 +32,3 @@ TESTER:
   TEST_TARGET_DATA: "F:/Datasets/EgoAction/ADL/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
-PATH:
-  PATH_EXP: "model/adl/p42p11/"

@@ -15,6 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D1_train.pkl"
   VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_train.pkl"
   TEST_LIST: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_test.pkl"
+  PATH_EXP: "model/epic/d12d3/"
 DATASET:
   DATASET: "epic"
   MODALITY: "RGB"
@@ -31,5 +32,3 @@ TESTER:
   TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
-PATH:
-  PATH_EXP: "model/epic/d12d3/"

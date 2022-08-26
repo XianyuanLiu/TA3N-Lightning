@@ -15,6 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_04_train.pkl"
   VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_06_train.pkl"
   TEST_LIST: "/home/czh/lxy/data/EgoAction/ADL/annotations/labels_train_test/adl_P_06_test.pkl"
+  PATH_EXP: "model/adl/p42p6/"
 DATASET:
   DATASET: "adl"
   MODALITY: "RGB"
@@ -31,5 +32,3 @@ TESTER:
   TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
-PATH:
-  PATH_EXP: "model/adl/p42p6/"

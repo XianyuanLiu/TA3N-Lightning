@@ -15,6 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "/home/czh/lxy/data/EgoAction/GTEA/annotations/labels_train_test/gtea_train.pkl"
   VAL_TARGET_LIST: "/home/czh/lxy/data/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_train.pkl"
   TEST_LIST: "/home/czh/lxy/data/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_test.pkl"
+  PATH_EXP: "model/gk/gk/"
 DATASET:
   DATASET: "gtea"
   MODALITY: "RGB"
@@ -31,5 +32,3 @@ TESTER:
   TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/KITCHEN/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
-PATH:
-  PATH_EXP: "model/gk/gk/"
