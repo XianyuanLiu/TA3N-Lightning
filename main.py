@@ -35,7 +35,8 @@ def main():
     cfg.merge_from_file(args.cfg)
     cfg.freeze()
 
-    path_exp = os.path.join(cfg.PATHS.EXP_PATH, cfg.DATASET.MODALITY)
+    # path_exp = os.path.join(cfg.PATHS.EXP_PATH, cfg.DATASET.MODALITY)
+    path_exp = cfg.PATHS.EXP_PATH
 
     # ========== model init ========#
 

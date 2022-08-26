@@ -31,3 +31,5 @@ TESTER:
   TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/ADL/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
+PATH:
+  PATH_EXP: "model/adl/p42p6/"

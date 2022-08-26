@@ -24,10 +24,12 @@ DATASET:
   NUM_SEGMENTS: 16
   VAL_SEGMENTS: 16
 TRAINER:
-  MAX_EPOCHS: 2
+  MAX_EPOCHS: 30
   TRAIN_METRIC: "verb"
   BATCH_SIZE: [16,10,16]
 TESTER:
   TEST_TARGET_DATA: "/home/czh/lxy/data/EgoAction/EPIC/EPIC_KITCHENS_2018/frames_rgb_flow/feature/"
   TEST_SEGMENTS: 16
   BATCH_SIZE: 16
+PATH:
+  PATH_EXP: "model/epic/d22d1/"
