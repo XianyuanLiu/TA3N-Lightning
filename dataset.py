@@ -276,7 +276,8 @@ class AGKDataSet(TSNDataSet):
     def _load_feature(self, directory, idx):
         feat_path = os.path.join(directory, self.image_tmpl.format(idx))
         # print(feat_path)
-        feat = [torch.load(feat_path)]
+        feat = [torch.load(feat_path).squeeze(0)]
+        # EPIC-8 feature size is (1, 2048), so squeeze to 2048. May update these features in the future.
         return feat
 
 
@@ -298,7 +299,7 @@ class EPICDataSet(AGKDataSet):
         input_file = pd.read_pickle(self.list_file)
         for line in input_file.values:
             if line[1] in ["P01", "P08", "P22"]:
-                if 0 <= line[9] < 7:
+                if 0 <= line[9] < 8:
                     if line[7] - line[6] + 1 >= 16:
                         label = line[9]
                         data.append((os.path.join(line[1], line[2]), line[6], line[7], label))

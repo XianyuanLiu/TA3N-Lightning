@@ -79,7 +79,7 @@ def main():
         max_epochs=cfg.TRAINER.MAX_EPOCHS,
         callbacks=[checkpoint_callback],
         gpus=args.gpus,
-        accelerator=cfg.TRAINER.ACCELERATOR
+        strategy=cfg.TRAINER.ACCELERATOR
     )
 
     log_info('Starting training......')
