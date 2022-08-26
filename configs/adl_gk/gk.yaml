@@ -15,7 +15,7 @@ PATHS:
   VAL_SOURCE_LIST: "F:/Datasets/EgoAction/GTEA/annotations/labels_train_test/gtea_train.pkl"
   VAL_TARGET_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_train.pkl"
   TEST_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_test.pkl"
-  PATH_EXP: "model/gk/gk/"
+  EXP_PATH: "model/gk/gk/"
 DATASET:
   DATASET: "gtea"
   MODALITY: "RGB"
