@@ -261,7 +261,7 @@ def get_val_data_loaders(cfg):
                                         test_mode=True,
                                         )
         elif cfg.DATASET.DATASET == 'epic':
-            target_set_val = EPICDataSet(val_target_data.joinpath("train"), val_target_list,
+            target_set_val = EPICDataSet(val_target_data.joinpath("test"), val_target_list,
                                          num_dataload=num_target_val,
                                          num_segments=cfg.DATASET.VAL_SEGMENTS,
                                          new_length=data_length, modality=cfg.DATASET.MODALITY,
