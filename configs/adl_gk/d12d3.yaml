@@ -13,7 +13,7 @@ PATHS:
   PATH_VAL_DATA_SOURCE: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/frames_rgb_flow/feature/"
   PATH_VAL_DATA_TARGET: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/frames_rgb_flow/feature/"
   VAL_SOURCE_LIST: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D1_train.pkl"
-  VAL_TARGET_LIST: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_train.pkl"
+  VAL_TARGET_LIST: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_test.pkl"
   TEST_LIST: "F:/Datasets/EgoAction/EPIC/EPIC_KITCHENS_2018/annotations/labels_train_test/epic_D3_test.pkl"
   EXP_PATH: "model/epic/d12d3/"
 DATASET:

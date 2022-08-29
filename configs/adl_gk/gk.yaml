@@ -13,7 +13,7 @@ PATHS:
   PATH_VAL_DATA_SOURCE: "F:/Datasets/EgoAction/GTEA/frames_rgb_flow/feature/"
   PATH_VAL_DATA_TARGET: "F:/Datasets/EgoAction/KITCHEN/frames_rgb_flow/feature/"
   VAL_SOURCE_LIST: "F:/Datasets/EgoAction/GTEA/annotations/labels_train_test/gtea_train.pkl"
-  VAL_TARGET_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_train.pkl"
+  VAL_TARGET_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_test.pkl"
   TEST_LIST: "F:/Datasets/EgoAction/KITCHEN/annotations/labels_train_test/kitchen_test.pkl"
   EXP_PATH: "model/gk/gk/"
 DATASET:
