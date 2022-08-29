@@ -55,7 +55,6 @@ def main():
 
     if cfg.TO_VALIDATE:
         log_info('Loading validation data......')
-        # source_loader_val, target_loader_val = get_val_data_loaders(cfg)
         source_loader_val, target_loader_val = get_val_data_loaders(cfg)
 
     # ========== Callbacks and checkpoints ========#
@@ -73,7 +72,7 @@ def main():
     checkpoint_callback = ModelCheckpoint(
         monitor=monitor,
         dirpath=path_exp,
-        filename='checkpoint',
+        filename='{epoch}-{step}-{Prec@1 Verb:.4f}',
         mode='max'
     )
     checkpoint_callback.FILE_EXTENSION = ".pth.tar"
